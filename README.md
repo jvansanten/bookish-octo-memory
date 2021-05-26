@@ -272,7 +272,54 @@ __I3Index__              Group
 
 2. Add a command-line argument to set the `Keys` parameter of `I3HDFWriter`. Which other objects can you write to the HDF5 file? You may need to use `dataio-shovel` to find out the names of objects. `icetray-inspect` will tell you which parameters `I3Module`s and tray segments support, e.g. `icetray-inspect hdfwriter` to see all `I3Module`s and tray segments defined in the `hdfwriter` module.
 
+### Summarizing and visualizing data with Pandas
 
+[Pandas](https://pandas.pydata.org) is an incredibly useful package for data analysis. It provides a `DataFrame` object that is similar to a Numpy `ndarray` (which it uses internally), but can be indexed with arbitrary labels rather than just integer offsets. This makes it easy to manipulate and combine irregularly-shaped data without ever having to write an explicit loop. To read the HDF5 table you just created into a `DataFrame`:
+
+```python
+import tables
+import pandas as pd
+with tables.open_file("Sunflower_350m_pDOM_1.0x_MuonGun.021489.000099_baseproc.hdf5") as f:
+    pulses = pd.DataFrame(f.root.InIcePulses.read())
+```
+
+You can use the `head()` method to print out the first few rows, and the `columns` property to see the column names:
+
+```pycon
+In [8]: pulses.head()
+Out[8]:
+   Run  Event  SubEvent    ...             time     width    charge
+0   99      0         0    ...     20566.108505  6.250000  1.130296
+1   99      0         0    ...     20776.956348  6.250000  1.758343
+2   99      0         0    ...     20978.594113  6.250000  0.636451
+3   99      0         0    ...     21275.058408  6.250000  1.004061
+4   99      0         0    ...     14201.731693  0.833511  0.957578
+
+[5 rows x 12 columns]
+In [9]: pulses.columns
+Out[9]:
+Index(['Run', 'Event', 'SubEvent', 'SubEventStream', 'exists', 'string', 'om',
+       'pmt', 'vector_index', 'time', 'width', 'charge'],
+      dtype='object')
+```
+
+You see the actual properties of each pulse (time, width, charge), preceded by a number of indexing columns. This is how `tableio` flattens hierarchical data into a table: every element is a row, and those rows can be grouped together by the values of the remaining columns to reassociate them. For example, to get the total charge per event, you could do:
+
+```pycon
+In [10]: pulses.groupby(["Run", "Event", "SubEvent"])["charge"].sum()
+Out[10]:
+Run  Event  SubEvent
+99   0      0             2643.572806
+     1      0           265994.732366
+     2      0            28094.514560
+Name: charge, dtype: float64
+```
+
+`groupby` creates a `DataFrameGroupBy` expression, `["charge"]` selects the charge column, and `sum()` sums over groups. The result a `Series` with a [multi-level index](https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html?highlight=multi%20level%20indexes#multiindex-advanced-indexing) given by the grouping columns. You can find more explanation and examples of `groupby` in the [pandas documentation](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html).
+
+#### Exercises:
+
+1. Use Pandas to calculate the ratio of total collected charge (from InIcePulses.charge) to muon energy (from MCMuon.energy). There is only one MCMuon per frame, but multiple corresponding entries in InIcePulses. You may want to use [DataFrame.set_index()](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.set_index.html) to create multi-level indexes directly.
 
 
 
