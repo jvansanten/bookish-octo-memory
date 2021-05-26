@@ -286,8 +286,7 @@ with tables.open_file("Sunflower_350m_pDOM_1.0x_MuonGun.021489.000099_baseproc.h
 You can use the `head()` method to print out the first few rows, and the `columns` property to see the column names:
 
 ```pycon
-In [8]: pulses.head()
-Out[8]:
+>>> pulses.head()
    Run  Event  SubEvent    ...             time     width    charge
 0   99      0         0    ...     20566.108505  6.250000  1.130296
 1   99      0         0    ...     20776.956348  6.250000  1.758343
@@ -296,8 +295,7 @@ Out[8]:
 4   99      0         0    ...     14201.731693  0.833511  0.957578
 
 [5 rows x 12 columns]
-In [9]: pulses.columns
-Out[9]:
+>>> pulses.columns
 Index(['Run', 'Event', 'SubEvent', 'SubEventStream', 'exists', 'string', 'om',
        'pmt', 'vector_index', 'time', 'width', 'charge'],
       dtype='object')
@@ -306,8 +304,7 @@ Index(['Run', 'Event', 'SubEvent', 'SubEventStream', 'exists', 'string', 'om',
 You see the actual properties of each pulse (time, width, charge), preceded by a number of indexing columns. This is how `tableio` flattens hierarchical data into a table: every element is a row, and those rows can be grouped together by the values of the remaining columns to reassociate them. For example, to get the total charge per event, you could do:
 
 ```pycon
-In [10]: pulses.groupby(["Run", "Event", "SubEvent"])["charge"].sum()
-Out[10]:
+>>> pulses.groupby(["Run", "Event", "SubEvent"])["charge"].sum()
 Run  Event  SubEvent
 99   0      0             2643.572806
      1      0           265994.732366
