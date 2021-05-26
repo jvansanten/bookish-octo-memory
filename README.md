@@ -2,6 +2,49 @@
 
 IceTray is IceCube's processing framework, used for both data (online at Pole, and offline in the North) and simulation. The code lives [on GitHub](https://github.com/icecube/icetray) and [documentation on docs.icecube.aq](https://docs.icecube.aq/icetray/main/).
 
+## Preliminaries: connecting to IceCube interactive nodes
+
+Code snippets in the tutorial below are intended to be executed on interactive nodes at WIPAC, since they use the Lustre filesystem at `/data/user`.
+
+### WIPAC
+
+If you have not already done so, you may want to set up ssh tunnelling can connect directly to hosts behind the WIPAC firewall. Something like the following should be in your .ssh/config:
+
+```ssh-config
+Host pub*.icecube.wisc.edu
+   ProxyJump none
+
+Host *.icecube.wisc.edu
+   User your_user_name
+   ProxyJump pub.icecube.wisc.edu
+```
+
+where `your_user_name` is your WIPAC login. This causes e.g. `ssh cobalt05.icecube.wisc.edu` to proxy its connections through `pub.icecube.wisc.edu`. You may also wish to [set up public key authentication](https://www.ssh.com/academy/ssh/copy-id) so that you don't have to type your password when logging in. In short:
+
+```console
+> ssh-keygen
+> ssh-copy-id pub.icecube.wisc.edu
+```
+
+This will generate a public/private keypair, and copy the public key to your ~/.ssh directory on the remote system to it can be used to authenticate you. You should protect your private key with a passphrase; otherwise, your key can be stolen and used to impersonate you. You can [use ssh-agent to avoid re-typing your password every time you need your ssh key](https://www.freecodecamp.org/news/the-ultimate-guide-to-ssh-setting-up-ssh-keys/).
+
+### DESY Zeuthen
+
+The setup for DESY Zeuthen is similar:
+
+```ssh-config
+Host pub*.zeuthen.desy.de transfer.zeuthen.desy.de transfer.ifh.de
+        ProxyJump none
+
+Host *.ifh.de *.zeuthen.desy.de
+        User your_user_name
+        GSSAPIAuthentication yes
+        GSSAPIDelegateCredentials yes
+        ProxyJump pub2.zeuthen.desy.de
+```
+
+Note that home directories are stored in AFS, so you can't use standard public key authentication. Before connecting, you need to create a Kerberos token on your local machine with `kinit your_user_name@IFH.DE`, where `your_user_name` is your DESY username. Note that the capitalization in `IFH.DE` is important. Thereafter, e.g. `ssh ice-wgs1.ifh.de` will use your local Kerberos token to authenticate, and proxy connections through `pub2.zeuthen.desy.de`. The token will expire after 25 hours by default; you can renew it while it is still valid with `kinit -R`.
+
 ## Frames
 
 All data exchange in IceTray goes through [I3Frame](https://docs.icecube.aq/icetray/main/projects/icetray/classes/i3frame.html#i3frame-reference). This is essentially a big dictionary, tagged with a "stop" (more on that later). An IceTray script consists of a chain of modules that, when given a frame, can take objects it contains, perform some calculation, and add the result as a new object.
