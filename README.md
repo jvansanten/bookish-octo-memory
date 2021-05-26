@@ -240,13 +240,13 @@ tray.Add(I3HDFWriter,
 )
 ```
 
-7. Execute the tray. Everything up to now has been setup[^boilerplate]; if you ended the script here it would not do anything. `tray.Execute()` invokes the driving module to get a frame, then passes it to each module in the order in which they were added to the tray. This is repeated until the driving module returns a null frame (i.e. the input files have been read).
+7. Execute the tray. Everything up to now has been setup<sup>[[5]](#boilerplate)</sup>; if you ended the script here it would not do anything. `tray.Execute()` invokes the driving module to get a frame, then passes it to each module in the order in which they were added to the tray. This is repeated until the driving module returns a null frame (i.e. the input files have been read).
 
 ```
 tray.Execute()
 ```
 
-[^boilerplate]: You may have noticed that there is a great deal of "boilerplate" code to write before you get to the actual body of the IceTray script. I find it convenient to configure snippets in my editor so that I don't have to type these every time. The attached `python.json` is a snippet configuration for [VSCode](https://code.visualstudio.com/docs/editor/userdefinedsnippets). The internal syntax of these snippets is in Textmate format, and they can be used in [TextMate](https://macromates.com/manual/en/snippets), [SublimeText](https://sublime-text-unofficial-documentation.readthedocs.io/en/stable/extensibility/snippets.html), [Atom](https://atom.io/packages/snippets), or even [Vim](https://www.vim.org/scripts/script.php?script_id=2540).
+<a name="boilerplate">[5]</a>: You may have noticed that there is a great deal of "boilerplate" code to write before you get to the actual body of the IceTray script. I find it convenient to configure snippets in my editor so that I don't have to type these every time. The attached `python.json` is a snippet configuration for [VSCode](https://code.visualstudio.com/docs/editor/userdefinedsnippets). The internal syntax of these snippets is in Textmate format, and they can be used in [TextMate](https://macromates.com/manual/en/snippets), [SublimeText](https://sublime-text-unofficial-documentation.readthedocs.io/en/stable/extensibility/snippets.html), [Atom](https://atom.io/packages/snippets), or even [Vim](https://www.vim.org/scripts/script.php?script_id=2540).
 
 ### tableio example
 
