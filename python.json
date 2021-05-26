@@ -1,0 +1,46 @@
+{
+	"IceTray boilerplate": {
+		"prefix": "tray",
+		"body": [
+			"#!${1|/bin/sh /cvmfs/icecube.opensciencegrid.org/py3-v4.1.1/icetray-start,/usr/bin/env python|}",
+			"#METAPROJECT ${2|icetray/stable|}",
+			"",
+			"\"\"\"",
+			"$3",
+			"\"\"\"",
+			"",
+			"from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter",
+			"parser = ArgumentParser(description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter)",
+			"parser.add_argument('infile', nargs='+')",
+			"parser.add_argument('outfile')",
+			"args = parser.parse_args()",
+			"",
+			"from icecube import icetray, dataclasses, dataio",
+			"from I3Tray import I3Tray",
+			"",
+			"tray = I3Tray()",
+			"",
+			"tray.context[\"I3FileStager\"] = dataio.get_stagers()",
+			"tray.Add(\"I3Reader\", filenamelist=args.infile)",
+			"",
+			"$4",
+			"",
+			"tray.Add(\"I3Writer\", Streams=list(map(icetray.I3Frame.Stream, 'QP')),",
+			"# DropOrphanStreams=[icetray.I3Frame.DAQ],",
+			"filename=args.outfile)",
+			"",
+			"tray.Execute()"
+		  ]
+	},
+	"HDFWriter boilerplate": {
+		"prefix": "hdfwriter",
+		"body": [
+			"from icecube.hdfwriter import ${1|I3HDFWriter,I3SimHDFWriter|}",
+			"tray.Add($1,",
+			"    Keys=[$2],",
+			"    SubEventStreams=[$3],",
+			"    Output=${4|args.outfile|},",
+			")"
+		]
+	}
+}
