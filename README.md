@@ -134,16 +134,16 @@ You can use the arrow keys to move from frame to frame, `Enter` to show a text r
 
 There are a few different kinds of event data to be aware of. The most fundamental is `I3RecoPulseSeriesMap`, printed in the view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
 
-- time[^property-casing]: the leading-edge time of the pulse[^i3-units]
+- time<sup>[[2]](#property-casing)</sup>: the leading-edge time of the pulse<sup>[[3]](#i3-units)</sup>
 - width: the granularity of the linear decomposition, i.e. the minimum interval between pulses
 - charge: the amplitude of the pulse, in photoelectrons. This is an estimate of the integrated photocathode current between time and time+width, and related to the rate of optical photons striking the photocathode.
 - flags: a bitfield that is used to record provenance information for the pulse
 
 <a name="type-names">[1]</a>: There are two different naming conventions here. Each item in the frame is backed by a C++ object, and `I3Map<OMKey, vector<I3RecoPulse>>` is the object's class. It is an `I3Map` (a subclass of `std::map`, conceptually similar to a Python `dict`) whose keys are of type `OMKey` and values of type `std::vector<I3RecoPulse>` (conceptually similar to a Python `list` of `I3RecoPulse` objects). The "pretty" name `I3RecoPulseSeriesMap` should be read right-to-left: a `Map` (implicitly, with keys of type `OMKey`) to a `Series` (vector) of `I3RecoPulse`.
 
-[^property-casing]: In the C++ interface, and the string representations printed by `dataio-shovel`, properties are usually written in CamelCase, while in Python they are accessed in snake_case. For example, in C++ you would have a method `obj.GetSomeProperty()`, which would be printed as `SomeProperty`, and would be accessed in Python as `obj.some_property`.
+<a name="property-casing">[2]</a>: In the C++ interface, and the string representations printed by `dataio-shovel`, properties are usually written in CamelCase, while in Python they are accessed in snake_case. For example, in C++ you would have a method `obj.GetSomeProperty()`, which would be printed as `SomeProperty`, and would be accessed in Python as `obj.some_property`.
 
-[^i3-units]: All times in (triggered) IceCube frame are ns after the start of the global trigger readout window. In untriggered (simulated) data, times are also in nanoseconds, but w.r.t. some arbitrary zero point (usually, the vertex time of the primary particle). The trigger time itself is in `I3EventHeader`. Distances are in meters, energies are in GeV, and charges in units of e. The units are self-consistent, which has some odd side-effects, for example that ~7 mV amplitude of a single-PE PMT pulse is given as 7e-12 gigavolts. See also: [docs](https://docs.icecube.aq/icetray/main/projects/icetray/i3units.html)
+<a name="i3-units">[3]</a>: All times in (triggered) IceCube frame are ns after the start of the global trigger readout window. In untriggered (simulated) data, times are also in nanoseconds, but w.r.t. some arbitrary zero point (usually, the vertex time of the primary particle). The trigger time itself is in `I3EventHeader`. Distances are in meters, energies are in GeV, and charges in units of e. The units are self-consistent, which has some odd side-effects, for example that ~7 mV amplitude of a single-PE PMT pulse is given as 7e-12 gigavolts. See also: [docs](https://docs.icecube.aq/icetray/main/projects/icetray/i3units.html)
 
 There are a few alternate representations `I3RecoPulseSeriesMap` that may be stored in the frame to save memory and disk space:
 
@@ -159,12 +159,12 @@ The event header exists in both Q and P frames, but only in triggered data. It h
 
 - start_time: the time of the trigger start, in DAQ time (the year, and 1/10 ns clock ticks since the beginning of the year). This is most useful for converting local directions into sky directions.
 - end_time: the time of the trigger end, in DAQ time.
-- run_id (Q and P): in data, the identifier of the ~8-hour data-taking run. In simulation, an identifier for file[^simulation-file].
+- run_id (Q and P): in data, the identifier of the ~8-hour data-taking run. In simulation, an identifier for file<sup>[[3]](#simulation-file)</sup>.
 - event_id (Q and P): a running index of the trigger since the run (or simulation file) began.
 - sub_event_stream (P only): the name of the view this P frame represents, e.g. in Gen2 simulation "IC86_SMT8" or "GEN2".
 - sub_event_id (P only): the index of the view within the sub_event_stream. For example, if there are two "IC86_SMT8" views derived from the same Q frame, their `I3EventHeader`s will have the same 
 
-[^simulation-file]: A simulation set is typically run N times, each with a diffent pseudorandom number sequence. Since these "files" are independent, they can be created in parallel.
+<a name="simulation-file">[4]</a>: A simulation set is typically run N times, each with a diffent pseudorandom number sequence. Since these "files" are independent, they can be created in parallel.
 
 The `I3EventHeader` is most important as a unique identifier for events, and can be used to associate data when converted to tabular form (see tableio, below).
 
