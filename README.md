@@ -89,14 +89,14 @@ You can use the arrow keys to move from frame to frame, `Enter` to show a text r
 
 ### Pulses
 
-There are a few different kinds of event data to be aware of. The most fundamental is `I3RecoPulseSeriesMap`, printed in the view above as `I3Map<OMKey, vector<I3RecoPulse>>`[^type-names]. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
+There are a few different kinds of event data to be aware of. The most fundamental is `I3RecoPulseSeriesMap`, printed in the view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
 
 - time[^property-casing]: the leading-edge time of the pulse[^i3-units]
 - width: the granularity of the linear decomposition, i.e. the minimum interval between pulses
 - charge: the amplitude of the pulse, in photoelectrons. This is an estimate of the integrated photocathode current between time and time+width, and related to the rate of optical photons striking the photocathode.
 - flags: a bitfield that is used to record provenance information for the pulse
 
-[^type-names]: There are two different naming conventions here. Each item in the frame is backed by a C++ object, and `I3Map<OMKey, vector<I3RecoPulse>>` is the object's class. It is an `I3Map` (a subclass of `std::map`, conceptually similar to a Python `dict`) whose keys are of type `OMKey` and values of type `std::vector<I3RecoPulse>` (conceptually similar to a Python `list` of `I3RecoPulse` objects). The "pretty" name `I3RecoPulseSeriesMap` should be read right-to-left: a `Map` (implicitly, with keys of type `OMKey`) to a `Series` (vector) of `I3RecoPulse`.
+<a name="type-names">[1]</a>: There are two different naming conventions here. Each item in the frame is backed by a C++ object, and `I3Map<OMKey, vector<I3RecoPulse>>` is the object's class. It is an `I3Map` (a subclass of `std::map`, conceptually similar to a Python `dict`) whose keys are of type `OMKey` and values of type `std::vector<I3RecoPulse>` (conceptually similar to a Python `list` of `I3RecoPulse` objects). The "pretty" name `I3RecoPulseSeriesMap` should be read right-to-left: a `Map` (implicitly, with keys of type `OMKey`) to a `Series` (vector) of `I3RecoPulse`.
 
 [^property-casing]: In the C++ interface, and the string representations printed by `dataio-shovel`, properties are usually written in CamelCase, while in Python they are accessed in snake_case. For example, in C++ you would have a method `obj.GetSomeProperty()`, which would be printed as `SomeProperty`, and would be accessed in Python as `obj.some_property`.
 
