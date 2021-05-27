@@ -130,9 +130,15 @@ You can use the arrow keys to move from frame to frame, `Enter` to show a text r
 
 ## Event data
 
+This is an IceCube event (likely a penetrating atmospheric muon). The muon (represented by the red arrow) induces Cherenkov photons in the ice, most of which are absorbed before they can be detected. The grey dots represent DOMs that did not detect any photons, while the colored dots represent the those that did.
+
+![Event view](assets/ShovelScreen.png)
+
+While this view is useful for qualitative assessments, it is important to understand how these data are represented in the frame. 
+
 ### Pulses
 
-There are a few different kinds of event data to be aware of. The most fundamental is `I3RecoPulseSeriesMap`, printed in the view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
+The most fundamental type of event data is `I3RecoPulseSeriesMap`, printed in the `dataio-shovel` view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
 
 - time<sup>[[2]](#property-casing)</sup>: the leading-edge time of the pulse<sup>[[3]](#i3-units)</sup>
 - width: the granularity of the linear decomposition, i.e. the minimum interval between pulses
@@ -317,6 +323,13 @@ Name: charge, dtype: float64
 #### Exercises:
 
 1. Use Pandas to calculate the ratio of total collected charge (from InIcePulses.charge) to muon energy (from MCMuon.energy). There is only one MCMuon per frame, but multiple corresponding entries in InIcePulses. You may want to use [DataFrame.set_index()](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.set_index.html) to create multi-level indexes directly.
+
+# Miscellaneous bits of putative wisdom
+
+- Keep your code in version control
+- [Commit early, commit often](https://sethrobertson.github.io/GitBestPractices/)
+- [Write useful commit messages](https://chris.beams.io/posts/git-commit/)
+
 
 
 
