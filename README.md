@@ -1,6 +1,6 @@
-# IceTray in a nutshell
+# IceCube data and reconstruction crash course
 
-IceTray is IceCube's processing framework, used for both data (online at Pole, and offline in the North) and simulation. The code lives [on GitHub](https://github.com/icecube/icetray) and [documentation on docs.icecube.aq](https://docs.icecube.aq/icetray/main/).
+This tutorial introduces you to the concepts and skills you need to start working with low-level IceCube data, e.g. to test event reconstruction methods or develop new ones.
 
 ## Preliminaries: connecting to IceCube interactive nodes
 
@@ -45,7 +45,11 @@ Host *.ifh.de *.zeuthen.desy.de
 
 Note that home directories are stored in AFS, so you can't use standard public key authentication. Before connecting, you need to create a Kerberos token on your local machine with `kinit your_user_name@IFH.DE`, where `your_user_name` is your DESY username. Note that the capitalization in `IFH.DE` is important. Thereafter, e.g. `ssh ice-wgs1.ifh.de` will use your local Kerberos token to authenticate, and proxy connections through `pub2.zeuthen.desy.de`. The token will expire after 25 hours by default; you can renew it while it is still valid with `kinit -R`.
 
-## Frames
+## IceTray in a nutshell
+
+IceTray is IceCube's processing framework, used for both data (online at Pole, and offline in the North) and simulation. The code lives [on GitHub](https://github.com/icecube/icetray) and [documentation on docs.icecube.aq](https://docs.icecube.aq/icetray/main/).
+
+### Frames
 
 All data exchange in IceTray goes through [I3Frame](https://docs.icecube.aq/icetray/main/projects/icetray/classes/i3frame.html#i3frame-reference). This is essentially a big dictionary, tagged with a "stop" (more on that later). An IceTray script consists of a chain of modules that, when given a frame, can take objects it contains, perform some calculation, and add the result as a new object.
 
@@ -66,11 +70,11 @@ Since each data-taking run (or simulation configuration) has a unique set of GCD
 
 Different frame types hold different types of information. Within an IceTray session, objects from each stop are "mixed" into all following frames. This means that, for example, a P frame will appear to contain all the objects natively in that frame, plus any from preceding Q, G, C, and D frames. This allows you to find all the relevant information for a particular frame in the frame itself.
 
-## I3 files
+### I3 files
 
 An "I3" file is just a sequence of frames written to disk, one after the other. They have no internal structure beyond the frames, and can be trivially concatenated or split on a frame boundary. The names of these files typically end in the extension ".i3", but since much of the information in them is highly compressible, you will typically find them compressed with gzip (.i3.gz) or bzip2 (.i3.bz2). IceTray transparently handles compression and decompression for you.
 
-## Pre-built metaprojects
+### Pre-built metaprojects
 
 Builds of IceTray are distributed via [CVMFS](https://cernvm.cern.ch/fs/), a read-only, cache-friendly, distributed filesystem developed for the LHC Computing Grid. At Linux systems at sites where CVMFS is available (e.g. UW-Madison, DESY-Zeuthen, any site that also does LHC computing), you can enter an environment where IceTray is installed with:
 
@@ -94,7 +98,7 @@ Icetray environment has:
 
 Here, `/cvmfs/icecube.opensciencegrid.org/` is the IceCube namespace, `py3-v4.1.1` is the toolset (analogous to a Python virtualenv), and `icetray/stable` is the metaproject. There are specialized configurations of IceTray for online processing and filtering at Pole (pnf), offline processing (IceRec), and simulation (IceSim), but since they are, for the most part, subsets of the main IceTray project, you can use icetray/stable for most one-off tasks. Note that icetray/stable is rebuilt every time [icecube/icetray main](https://github.com/icecube/icetray) is updated (and its unit tests pass), so you should use a tagged release for tasks you want to be reproducible.
 
-## Browsing I3 files
+### Browsing I3 files
 
 IceTray ships with a console-based file browser, `dataio-shovel`. For example, from a shell with the IceTray environment loaded (see above), `dataio-shovel /data/user/ayovych/simulation/reco/1.0x/0000000-0000999/Sunflower_350m_pDOM_1.0x_MuonGun.021489.000099_baseproc.i3.bz2` will show the following view:
 
@@ -128,7 +132,7 @@ IceTray ships with a console-based file browser, `dataio-shovel`. For example, f
 
 You can use the arrow keys to move from frame to frame, `Enter` to show a text representation of the object, and `i` to drop into an iPython session with the current frame in scope as `frame`.
 
-## Event data
+### Event data
 
 This is an IceCube event (likely a penetrating atmospheric muon). The muon (represented by the red arrow) induces Cherenkov photons in the ice, most of which are absorbed before they can be detected. The grey dots represent DOMs that did not detect any photons, while the colored dots represent the those that did.
 
@@ -136,7 +140,7 @@ This is an IceCube event (likely a penetrating atmospheric muon). The muon (repr
 
 While this view is useful for qualitative assessments, it is important to understand how these data are represented in the frame.
 
-### Pulses
+#### Pulses
 
 Each time a photon ejects an electron from the PMT cathode, the PMT produces an amplified current pulse. The DOM mainboard reads out and digitizes the current pulse through a coupling transformer; the resulting waveform carries information about when photons were detected, and how many there were. In most cases, like the one shown below, the waveform consists of only a few pulses, and can be represented much more efficiently as a linear combination of pulse templates, shown as smooth lines in the figure below. More details on readout and triggering can be found in the [DOM paper](https://arxiv.org/abs/1612.05093), and situations where the linear approximation breaks down in [these slides on CalibrationErrata](https://docushare.icecube.wisc.edu/dsweb/Get/Document-63761/2013-01-29%20CalibrationErrata.pdf).
 
@@ -163,7 +167,7 @@ There are a few alternate representations `I3RecoPulseSeriesMap` that may be sto
 
 These can be chained, e.g. you may see a mask that refers to a union which in turn refers to more masks. 
 
-### I3EventHeader
+#### I3EventHeader
 
 The event header exists in both Q and P frames, but only in triggered data. It has the following properties:
 
