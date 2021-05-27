@@ -134,11 +134,15 @@ This is an IceCube event (likely a penetrating atmospheric muon). The muon (repr
 
 ![Event view](assets/ShovelScreen.png)
 
-While this view is useful for qualitative assessments, it is important to understand how these data are represented in the frame. 
+While this view is useful for qualitative assessments, it is important to understand how these data are represented in the frame.
 
 ### Pulses
 
-The most fundamental type of event data is `I3RecoPulseSeriesMap`, printed in the `dataio-shovel` view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is a linear decomposition of the digitized waveform recorded by each optical module (OM). It has the following properties:
+Each time a photon ejects an electron from the PMT cathode, the PMT produces an amplified current pulse. The DOM mainboard reads out and digitizes the current pulse through a coupling transformer; the resulting waveform carries information about when photons were detected, and how many there were. In most cases, like the one shown below, the waveform consists of only a few pulses, and can be represented much more efficiently as a linear combination of pulse templates, shown as smooth lines in the figure below. More details on readout and triggering can be found in the [DOM paper](https://arxiv.org/abs/1612.05093).
+
+![Waveform with unfolded pulses](assets/pulses.png)
+
+Pulses are stored in `I3RecoPulseSeriesMap`, printed in the `dataio-shovel` view above as `I3Map<OMKey, vector<I3RecoPulse>>`<sup>[[1]](#type-names)</sup>. Each `I3RecoPulseSeries` is the linear decomposition of the digitized waveform mentioned above. An `I3RecoPulse` has the following properties:
 
 - time<sup>[[2]](#property-casing)</sup>: the leading-edge time of the pulse<sup>[[3]](#i3-units)</sup>
 - width: the granularity of the linear decomposition, i.e. the minimum interval between pulses
