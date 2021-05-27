@@ -138,7 +138,7 @@ While this view is useful for qualitative assessments, it is important to unders
 
 ### Pulses
 
-Each time a photon ejects an electron from the PMT cathode, the PMT produces an amplified current pulse. The DOM mainboard reads out and digitizes the current pulse through a coupling transformer; the resulting waveform carries information about when photons were detected, and how many there were. In most cases, like the one shown below, the waveform consists of only a few pulses, and can be represented much more efficiently as a linear combination of pulse templates, shown as smooth lines in the figure below. More details on readout and triggering can be found in the [DOM paper](https://arxiv.org/abs/1612.05093).
+Each time a photon ejects an electron from the PMT cathode, the PMT produces an amplified current pulse. The DOM mainboard reads out and digitizes the current pulse through a coupling transformer; the resulting waveform carries information about when photons were detected, and how many there were. In most cases, like the one shown below, the waveform consists of only a few pulses, and can be represented much more efficiently as a linear combination of pulse templates, shown as smooth lines in the figure below. More details on readout and triggering can be found in the [DOM paper](https://arxiv.org/abs/1612.05093), and situations where the linear approximation breaks down in [these slides on CalibrationErrata](https://docushare.icecube.wisc.edu/dsweb/Get/Document-63761/2013-01-29%20CalibrationErrata.pdf).
 
 ![Waveform with unfolded pulses](assets/pulses.png)
 
