@@ -33,17 +33,19 @@ This will generate a public/private keypair, and copy the public key to your ~/.
 The setup for DESY Zeuthen is similar:
 
 ```ssh-config
-Host pub*.zeuthen.desy.de transfer.zeuthen.desy.de transfer.ifh.de
+Host warp*.zeuthen.desy.de transfer.zeuthen.desy.de transfer.ifh.de
         ProxyJump none
 
 Host *.ifh.de *.zeuthen.desy.de
         User your_user_name
         GSSAPIAuthentication yes
         GSSAPIDelegateCredentials yes
-        ProxyJump pub2.zeuthen.desy.de
+        ProxyJump warp.zeuthen.desy.de
 ```
 
-Note that home directories are stored in AFS, so you can't use standard public key authentication. Before connecting, you need to create a Kerberos token on your local machine with `kinit your_user_name@IFH.DE`, where `your_user_name` is your DESY username. Note that the capitalization in `IFH.DE` is important. Thereafter, e.g. `ssh ice-wgs1.ifh.de` will use your local Kerberos token to authenticate, and proxy connections through `pub2.zeuthen.desy.de`. The token will expire after 25 hours by default; you can renew it while it is still valid with `kinit -R`.
+Note that SSH access from the outside the DESY Zeuthen _wired_ network now requires a second factor in the form of a TOTP code. After [issuing yourself a token-generating key](https://it.desy.de/services/mfa/short_introduction/index_eng.html), you can either type in the code for every new SSH session or, if you typically log in from a trusted device like your laptop, [generate and send codes automatically](https://gitlab.desy.de/jakob.van.santen/mfa-wrapper).
+
+Also note that home directories are stored in AFS, so you can't use standard public key authentication. Before connecting, you need to create a Kerberos token on your local machine with `kinit your_user_name@IFH.DE`, where `your_user_name` is your DESY username. Note that the capitalization in `IFH.DE` is important. Thereafter, e.g. `ssh ice-wgs1.ifh.de` will use your local Kerberos token to authenticate, and proxy connections through `pub2.zeuthen.desy.de`. The token will expire after 25 hours by default; you can renew it while it is still valid with `kinit -R`.
 
 ## IceTray in a nutshell
 
